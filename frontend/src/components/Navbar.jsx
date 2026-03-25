@@ -4,13 +4,13 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-xl bg-dark-base/60 border-b border-white/10 shadow-glass-sm">
       <div className="max-w-[975px] mx-auto px-5 h-[80px] flex items-center justify-between">
-        <div className="flex items-center">
+        <div className="flex items-center px-10">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]">
-            InstaDetect
+            Magnify
           </h1>
         </div>
 
-        <div className="hidden md:flex items-center flex-1 max-w-[268px] mx-auto">
+        <div className="hidden md:flex items-center flex-1 max-w-auto mx-auto">
           <div className="relative w-full group">
             <input
               type="text"
@@ -21,30 +21,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        <nav className="flex items-center gap-6">
-          <button className="p-2 text-slate-300 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-300">
-            <Home className="w-7 h-7" />
-          </button>
-          <button className="p-2 text-slate-300 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-300">
-            <MessageCircle className="w-7 h-7" />
-          </button>
-          <button
-            className="p-2 text-slate-300 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-300"
-          >
-            <PlusSquare className="w-7 h-7" />
-          </button>
-          <button className="p-2 text-slate-300 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-300">
-            <Compass className="w-7 h-7" />
-          </button>
-          <button className="p-2 text-slate-300 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] transition-all duration-300">
-            <Heart className="w-7 h-7" />
-          </button>
-          <button className="rounded-full p-[2px] bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 hover:shadow-glow transition-all duration-300">
-            <div className="w-8 h-8 rounded-full bg-slate-800 border-2 border-transparent overflow-hidden">
-              <div className="w-full h-full bg-slate-600"></div>
-            </div>
-          </button>
-        </nav>
+        
       </div>
     </header>
   );

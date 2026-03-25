@@ -6,3 +6,7 @@ transformers
 pillow
 torch
 torchvision
+accelerate
+safetensors
+numpy
+scikit-learn

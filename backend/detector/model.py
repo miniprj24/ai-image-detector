@@ -1,43 +1,35 @@
-from transformers import AutoImageProcessor, AutoModelForImageClassification
-from PIL import Image
-import torch
+from detector.swin_detector import detect as swin_detect
+from detector.cnn_detector import detect as cnn_detect
+from detector.vit_detector import detect as vit_detect
+from detector.f3net_detector import detect as f3net_detect
 
-# Load SDXL detector
-processor = AutoImageProcessor.from_pretrained("Organika/sdxl-detector")
-model = AutoModelForImageClassification.from_pretrained("Organika/sdxl-detector")
 
 def detect_image(image_path):
+
+    results = {}
+
     try:
-        img = Image.open(image_path).convert("RGB")
-
-        # Preprocess
-        inputs = processor(images=img, return_tensors="pt")
-
-        with torch.no_grad():
-            outputs = model(**inputs)
-
-        logits = outputs.logits
-        probs = torch.softmax(logits, dim=1)[0]
-
-        ai_score = float(probs[0])
-        human_score = float(probs[1])
-
-        if ai_score > human_score:
-            label = "AI-generated"
-            score = ai_score
-        else:
-            label = "Human-made"
-            score = human_score
-
-        return {
-            "score": round(score, 3),
-            "label": label,
-            "details": {
-                "ai_score": round(ai_score, 4),
-                "human_score": round(human_score, 4)
-            }
-        }
-
+        results["swin"] = swin_detect(image_path)
     except Exception as e:
-        print("DETECT ERROR:", e)
-        return {"score": None, "label": "Unknown", "details": {}}
+        print("SWIN ERROR:", e)
+        results["swin"] = {"label": "Error", "score": None}
+
+    try:
+        results["cnn"] = cnn_detect(image_path)
+    except Exception as e:
+        print("CNN ERROR:", e)
+        results["cnn"] = {"label": "Error", "score": None}
+
+    try:
+        results["vit"] = vit_detect(image_path)
+    except Exception as e:
+        print("VIT ERROR:", e)
+        results["vit"] = {"label": "Error", "score": None}
+
+    try:
+        results["f3net"] = f3net_detect(image_path)
+    except Exception as e:
+        print("F3NET ERROR:", e)
+        results["f3net"] = {"label": "Error", "score": None}
+
+    return results

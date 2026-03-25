@@ -1,15 +1,18 @@
 import os
 import json
+import uuid
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from detector.model import detect_image
 from werkzeug.utils import secure_filename
 
+from detector.model import detect_image
+
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app)
 
 UPLOAD_FOLDER = "static/uploads"
 DB_FILE = "database.json"
+
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 BACKEND_URL = "http://localhost:5000"
@@ -21,13 +24,14 @@ def load_db():
     try:
         with open(DB_FILE, "r") as f:
             return json.load(f)
-    except json.JSONDecodeError:
+    except:
         return []
 
 
 def save_db(data):
     with open(DB_FILE, "w") as f:
         json.dump(data, f, indent=2)
+
 
 @app.route("/posts", methods=["GET"])
 def get_posts():
@@ -37,27 +41,42 @@ def get_posts():
 
 @app.route("/upload", methods=["POST"])
 def upload_image():
+
     if "image" not in request.files:
         return jsonify({"error": "No image provided"}), 400
 
     file = request.files["image"]
+
     if file.filename == "":
         return jsonify({"error": "Empty filename"}), 400
+
+    caption = request.form.get("caption", "").strip()
 
     filename = secure_filename(file.filename)
     save_path = os.path.join(UPLOAD_FOLDER, filename)
     file.save(save_path)
 
-    # Run new SDXL detector
-    detection = detect_image(save_path)
+    # Run all detectors
+    detections = detect_image(save_path)
 
     public_path = f"{BACKEND_URL}/static/uploads/{filename}"
 
     new_post = {
+        "id": str(uuid.uuid4()),
+        "caption": caption,
         "image": public_path,
-        "label": detection.get("label", "Unknown"),
-        "score": detection.get("score", None),
-        "details": detection.get("details", {})
+        "results": {
+            "swin": detections["swin"]["label"],
+            "cnn": detections["cnn"]["label"],
+            "vit": detections["vit"]["label"],
+            "f3net": detections["f3net"]["label"]
+        },
+        "scores": {
+            "swin": detections["swin"]["score"],
+            "cnn": detections["cnn"]["score"],
+            "vit": detections["vit"]["score"],
+            "f3net": detections["f3net"]["score"]
+        }
     }
 
     posts = load_db()
@@ -66,7 +85,7 @@ def upload_image():
 
     return jsonify(new_post), 200
 
+
 if __name__ == "__main__":
     print("🚀 Flask backend running at http://localhost:5000")
-    app.run(debug=False, use_reloader=False)
-
+    app.run(debug=False)

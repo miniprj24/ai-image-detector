@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Navbar from './components/Navbar';
 import Feed from './components/Feed';
 import UploadBox from './components/UploadBox';
-import Stories from './components/Stories';
 
 function App() {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -18,7 +17,6 @@ function App() {
       <main className="pt-[100px] w-full mx-auto px-5 pb-10">
         <div className="flex gap-8 justify-center">
           <div className="w-full max-w-[630px]">
-            <Stories />
             <UploadBox onPostCreated={handlePostCreated} />
             <Feed key={refreshKey} />
           </div>
