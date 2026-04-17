@@ -21,7 +21,7 @@ The image being sent to the backend for detection.
 ### Detection Result
 The post displaying the uploaded image along with the classification result and confidence score.
 
-![Detection Result](demo/post.png)
+![Detection Result](demo/postcard.png)
 
 ---
 
